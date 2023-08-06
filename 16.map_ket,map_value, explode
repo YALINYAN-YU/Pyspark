@@ -1,0 +1,30 @@
+https://www.youtube.com/watch?v=LJITe8JxFEg&list=PLMWaZteqtEaJFiJ2FyIKK0YEuXwQ9YIS_&index=16
+
+column Name: 'lucy','david'
+column properties: {eye->brown, hair->black}, {eye->black, hair->yellow}
+
+1)
+from pyspark.sql.functions import explode
+df1=df.select('name','properties'.explode(df.properties)
+df1.show(truncate=false)
+
+lucy
+lucy
+david
+david
+
+2)
+from pyspark.sql.functions import map_keys
+df1=df.withColumn('keys', map_keys(df.properties))
+df1.show(truncate=false)
+
+2 rows
+keys : [eye, hair], [eye. hair]
+
+3)
+from pyspark.sql.functions import value_keys
+df1=df.withColumn('value', value_keys(df.properties))
+df1.show(truncate=false)
+
+2 rows
+values : [brow, black], [black, yellow]
