@@ -1,0 +1,31 @@
+youtube tutorial:
+https://www.youtube.com/watch?v=DSiIiDv3fMQ&list=PLMWaZteqtEaJFiJ2FyIKK0YEuXwQ9YIS_&index=14
+
+data=...
+schma=...
+df=createDataFrame(data,schema)
+
+from pyspark.sql.functions import explode, col
+df.show()
+df1= df.withColumn('skill', explode(col('skills')))
+df1.show
+
+
+from pyspark.sql.functions import split,col
+df.show()
+df2=df.withColumn('skillset',split(col('skills',',')))
+
+from pyspark.sql.functions import arrary, col
+df.show()
+df3=df.withColumn('skillsArrary', arrary(col('FirstSkill'),col('SecondSkill')))
+
+
+from pyspark.sql.functions import arrary_contains, col
+df4=df.withColumn('hasJavaSkill', arrary_contains(col('skills'),'Java'))
+df4.show()
+
+****
+always use help function
+
+help(arrary_contains)
+
