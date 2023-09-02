@@ -314,6 +314,41 @@ invalid_folder_count = invalid_df.select('folder').distinct().count()
 print("%d distinct invalid folders found" % invalid_folder_count)
 
 
+-----------------------------
+
+错误：
+# Create a function to return the number and type of dogs as a tuple
+def dogParse(doglist):
+  dogs = []
+  for dog in doglist:
+    (breed, start_x, start_y, end_x, end_y) = dog.split('doglist')
+    dogs.append((breed, int(start_x), int(start_y), int(end_x), int(end_y)))
+  return dogs
+
+# Create a UDF
+udfDogParse = udf(dogParse, ArrayType(doglist))
+
+# Use the UDF to list of dogs and drop the old column
+joined_df = joined_df.udfDogParse('doglist', ArrayType('doglist')).drop('dog_list')
+
+# Show the number of dogs in the first 10 rows
+joined_df.select(joined_df('doglist')).show(10)
+
+-----------------------------
+正确：
+# Create a function to return the number and type of dogs as a tuple
+def dogParse(doglist):
+  dogs = []
+  for dog in doglist:
+    (breed, start_x, start_y, end_x, end_y) = dog.split(',')
+    dogs.append((breed, int(start_x), int(start_y), int(end_x), int(end_y)))
+  return dogs
+
+# Create a UDF
+udfDogParse = F.udf(dogParse, ArrayType(DogType))
+
+# Use the UDF to list of dogs and drop the old column
+joined_df = joined_df.withColumn('dogs', udfDogParse('dog_list')).drop('dog_list')
 
 
 
