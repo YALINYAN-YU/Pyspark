@@ -349,6 +349,21 @@ udfDogParse = F.udf(dogParse, ArrayType(DogType))
 
 # Use the UDF to list of dogs and drop the old column
 joined_df = joined_df.withColumn('dogs', udfDogParse('dog_list')).drop('dog_list')
+-----------------------------
+
+# Define a UDF to determine the number of pixels per image
+def dogPixelCount(doglist):
+  totalpixels = 0
+  for dog in doglist:
+    totalpixels += (dog[3] - dog[1]) * (dog[4] - dog[2])
+  return totalpixels
+
+# Define a UDF for the pixel count
+udfDogPixelCount = F.udf(dogPixelCount, IntegerType())
+joined_df = joined_df.withColumn('dog_pixels', udfDogPixelCount('dogs'))
+
+# Create a column representing the percentage of pixels
+joined_df = joined_df.withColumn('dog_percent', (joined_df.dog_pixels / (joined_df.width * joined_df.height)) * 100)
 
 
 
